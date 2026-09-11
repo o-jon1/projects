@@ -1,0 +1,367 @@
+public class Starship {
+    private int integrity;
+    private int maxintegrity;
+    private int fuel;
+    private int warpfuel;
+    private String name;
+
+    public Starship() {
+        this(2);
+    }
+    public Starship(int difficulty) {
+        if (difficulty == 1) {
+            maxintegrity = 150;
+            fuel = 50; 
+            warpfuel = 3;
+        } 
+        else if (difficulty == 2) {
+            maxintegrity = 100;
+            fuel = 30;
+            warpfuel = 1;
+        } 
+        else if (difficulty == 3) {
+            maxintegrity = 75;
+            fuel = 30;
+            warpfuel = 0;
+        }
+        integrity = maxintegrity;
+    }
+    public void status() {
+        if (integrity >= 75) {
+            System.out.println("Ship is doing fine");
+        }
+        else if (integrity >= 50) {
+            System.out.println("Ship has damage");
+        }
+        else if (integrity >= 25) {
+            System.out.println("Ship has a lot of damage");
+        }
+        else if (integrity >= 1) {
+            System.out.println("Ship is almost dead");
+    }
+    }
+    public void setName(String name) {
+        this.name = name;
+    }
+    public String getName() {
+        return name;
+    }
+    public int getIntegrity() {
+        return integrity;
+    }
+    public int getFuel() {
+        return fuel;
+    }
+    public int getWarpFuel() {
+        return warpfuel;
+    }
+    public void refuel(int fuel) {
+        this.fuel += fuel;
+    }
+    public void warpRefuel(int warpfuel) {
+        this.warpfuel += warpfuel;
+    }
+    public void repair(int integrity) {
+        this.integrity += integrity;
+        if (this.integrity > maxintegrity) {
+            this.integrity = maxintegrity;
+        }
+    }
+    public boolean travel(int fuelCost) {
+        if (fuelCost > fuel) {
+            fuel = 0;
+            return false;
+        }
+        else {
+            fuel -= fuelCost;
+        return true;
+        }
+    }    
+    public boolean tax(int damage) {
+        if (damage > integrity) {
+            integrity = 0;
+            return false;
+        }
+        integrity -= damage;
+        return true;    
+    }
+    public int warp() {
+        if (warpfuel == 0) {
+            return 0;
+        }
+        else {
+            warpfuel--;
+            
+            double chance = Math.random() * 10;
+            if (chance <= 8) {
+                return 1;
+            }
+            else {
+                return 2;
+            }
+        }
+    }
+}
+
+
+
+
+
+
+
+
+import java.util.Scanner;
+
+public class Simulator
+{
+    private int difficulty; 
+    private int route;
+    private Starship ship;
+    private int distance;
+    private int attrition = 0;
+    
+    public Simulator()
+    {
+        System.out.print("Select difficult (1. Easy 2. Medium 3. Hard): ");    
+        difficulty = intIn(1,3); 
+        System.out.print("Select route (1. Short 2. Medium 3. Long): ");    
+        route = intIn(1,3); 
+
+        System.out.print("\nYou have selected a ");
+        switch (route){
+            case 1:
+                System.out.print("short");
+                distance = 500;
+                break;
+            case 2:
+                System.out.print("medium");
+                distance = 750;
+                break;
+            case 3:
+                System.out.print("long");
+                distance = 1000;
+                break;
+        }
+        System.out.print(" voyage with ");
+        switch (difficulty){
+            case 1:
+                System.out.print("easy");
+                break;
+            case 2:
+                System.out.print("medium");
+                break;
+            case 3:
+                System.out.print("hard");
+                break;
+        }
+        System.out.println(" difficulty.");
+        ship = new Starship(difficulty);
+        System.out.print("Please name your vessel: ");
+        ship.setName(sIn());
+        System.out.println();
+        getStatus();
+        commenceVoyage();
+        
+    }
+    
+    private void getStatus()
+    {
+        System.out.println("U.S.S. "+ship.getName()+", "+ship.getIntegrity()+" hull integrity.");
+        System.out.println(ship.getFuel()+" fuel with "+ship.getWarpFuel()+" warp fuel.");
+        System.out.println(distance + " lightyears to Earth.\n");
+    }
+    
+    private void commenceVoyage()
+    {
+        boolean hardship;
+        while (distance >= 0 && ship.getIntegrity()>0)
+        {
+            int i = 1;
+            ship.status();
+            if (ship.getFuel()==0)
+                System.out.println("The "+ship.getName()+" is out of fuel.");
+            else
+                System.out.println(i++ + ". Continue onward");
+
+            System.out.println(i++ + ". Search for fuel");
+            System.out.println(i++ + ". Attempt repairs");
+            System.out.println(i++ + ". Attempt warp travel");
+            System.out.println(i + ". Run a diagnostic and check ship status");
+            int choice = intIn(1,i);
+            System.out.println();
+            if (i == 4)
+                choice++;
+            
+            switch (choice){
+            // Continue
+            case 1:
+                System.out.println("The ship continues ahead.");
+                int d = (int) (Math.random()*40 + 10);
+                int f = d / 10;
+                hardship = check();
+
+                
+                if (hardship)
+                {
+                    System.out.println("Unexpected difficulties were encountered.");
+                    f *= 2;
+                }
+                
+                int dmg = (int) (Math.random()*f + 1);
+                ship.tax(dmg);
+                if (ship.travel(f))
+                    distance -= d;
+                else 
+                {
+                    System.out.println("The ship ran out of fuel.");
+                    distance -=f;
+                }
+                break;
+
+            // Fuel
+            case 2:
+                System.out.println("Attempting to scavenge for fuel.");
+                int encounter = (int) (Math.random() * 6);
+                if (encounter == 0)
+                {
+                    System.out.println("Bandits were encountered and the ship sustained damage");
+                    ship.tax((int)(Math.random()*8 + 3));
+                }
+                else if (encounter == 1)
+                {
+                    System.out.println("A small amount of fuel was found");
+                    ship.refuel((int)(Math.random()*5 + 1));
+                }
+                else if (encounter == 5)
+                {
+                    System.out.println("Warp fuel was found");
+                    ship.warpRefuel(1);
+                }
+                else if (encounter == 2 || encounter == 3)
+                {
+                    System.out.println("A moderate amount of fuel was found");
+                    ship.refuel((int)(Math.random()*5 + 3));
+                }
+                else 
+                {
+                    System.out.println("A large amount of fuel was found");
+                    ship.refuel((int)(Math.random()*7 + 4));
+                }
+                break;
+                
+            // Repair
+            case 3:
+                System.out.println("Commencing repairs.");
+                hardship = check();
+                int repair = (int) (Math.random() * 21 + 5);
+                if (hardship)
+                    repair /= 2;
+                ship.repair(repair);
+                break;
+                
+            // Warp
+            case 4:
+                int result = ship.warp();
+                if (result == 0)
+                   System.out.println("Not enough warp fuel to commence a jump.");
+                else if (result == 1 || result == 2){
+                    System.out.println("Commencing warp.");
+                    int e = (int) (Math.random()*ship.getIntegrity()*.5);
+                    ship.tax(e);
+                    if (result == 2)
+                        System.out.println("Warp drive failed, damage reported.");
+                    else
+                        distance -= e*10;
+                }
+
+                break;
+                
+            // Status    
+            case 5:
+                attrition++;
+                getStatus();
+                break;
+              }
+             System.out.println();
+
+        }
+        if (ship.getIntegrity()==0)
+            System.out.println("The "+ship.getName()+" was destroyed.");
+        else 
+            System.out.println("The "+ship.getName()+" successfully returned to Earth.");
+    }
+    
+    private boolean check()
+    {
+        boolean hardship = false;
+         int check = (int) (Math.random() * 101);
+                if (check < attrition)
+                {
+                    hardship = true;
+                }
+                attrition += difficulty;
+                if (attrition >= 75)
+                    attrition = 75;
+        return hardship;
+    }
+    
+    private static int intIn(int low, int high)
+    {
+        boolean cont = true;
+        Scanner keyboard = new Scanner (System.in);
+        String input;
+        boolean invalid = true;
+        int choice=0;
+        while (cont)        
+        {
+            try
+            {
+                input = keyboard.nextLine ();
+	            choice = Integer.parseInt (input);
+	            if (choice<low || choice>high)
+	                System.out.println("Please select a number between " + low + " and " + high);
+	            else
+	                cont = false;
+            }
+        	catch (Exception e)
+        	{
+	            System.out.println ("Please enter a number");
+        	}
+        }
+        return choice;
+    }
+  
+    private static String sIn()
+    {
+        boolean cont = true;
+        Scanner keyboard = new Scanner (System.in);
+        String input="";
+        boolean invalid = true;
+        while (cont)        
+        {
+            try
+            {
+                input = keyboard.nextLine ();
+	            cont = false;
+            }
+        	catch (Exception e)
+        	{
+	            System.out.println ("Invalid input");
+        	}
+        }
+        return input;
+    }
+
+}
+
+
+
+
+
+
+public class Main
+{
+	public static void main(String[] args) {
+		Simulator x = new Simulator();
+	}
+}
