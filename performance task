@@ -1,0 +1,53 @@
+import random
+
+def chooseWord():
+  words = ["python", "hangman", "computer", "program", "code", "game", "science", "performance", "task", "principle", "replit",]
+  return random.choice(words)
+
+def hangman():
+  words = chooseWord()
+  guessedLetters = []
+  attempts = 11
+
+  print("Welcome to Hangman!")
+  print("Try to guess the word, you have 11 attempts")
+
+  while attempts > 0:
+      print (" ")
+      print("Word", displayWord(words, guessedLetters))
+      guess = input("Guess a letter -> ")
+
+      if guess in guessedLetters:
+          print("You already guessed that letter")
+      elif guess in words:
+          print("Correct!")
+          guessedLetters.append(guess)
+          if words == displayWord(words, guessedLetters):
+              print (" ")
+              print("Congratulations! You guessed the word:", words)
+              break
+      else:
+          print("Wrong guess!")
+          attempts -= 1
+          print("Attempts left:", attempts)
+          if attempts == 0:
+              print(" ")
+              print("Game over, the word was", words)
+              break
+
+  playAgain = input("Do you want to play again? (yes/no): ")
+  if playAgain == "yes":
+      hangman()
+  else:
+      print("Thanks for playing")
+
+def displayWord(words, guessedLetters):
+  displayWord = ""
+  for i in words:
+      if i in guessedLetters:
+          displayWord += i
+      else:
+          displayWord += "_"
+  return displayWord
+
+hangman()
