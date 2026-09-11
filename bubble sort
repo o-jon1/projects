@@ -1,0 +1,14 @@
+import random
+num = 4
+def starting_list(num):
+    return [random.randint(1, 100) for _ in range(num)]
+def bubble_sort(arr):
+    n = len(arr)
+    for i in range(n):
+        for j in range(0, n-i-1):
+            if arr[j] > arr[j+1]:
+                arr[j], arr[j+1] = arr[j+1], arr[j]
+random_nums = starting_list(num)
+print("starting list", random_nums)
+bubble_sort(random_nums)
+print("sorted list", random_nums)
