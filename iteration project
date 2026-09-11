@@ -1,0 +1,87 @@
+public class Main
+{
+	public static void main(String[] args) {
+        System.out.println(Checker.palindrome("yoba$$$$$$nanaboy") * 100 + "%");
+        System.out.println(Checker.palindrome("tacocat") * 100 + "%");
+        System.out.println(Checker.palindrome("ufot123455677ofu") * 100 + "%");
+        System.out.println(Checker.palindrome(" !@#$%^&*()-+113=^^&#*  t E lNe t") * 100 + "%");
+        System.out.println(Checker.palindrome("wi N^!@34)24$ 3dO$ @w") * 100 + "%");
+        System.out.println(Checker.palindrome("(R)   (i) (C)   (e) (c)   (a) (r)") * 100 + "%");
+        System.out.println(Checker.anagram("badcredit", "debitcard"));
+        System.out.println(Checker.anagram("listen", "silent"));
+        System.out.println(Checker.anagram("aaa", "aab"));
+        System.out.println(Checker.anagram("aabbcc", "abcabc"));
+        String str1 = "heyvsa!@#u12345667890cemic!@#h$a%e^l^h^&e*r((e";
+        String str2 = "h3e3a3V4Yheli^)@(#umCHEESEcar";
+        System.out.print ("\n" + str1 + "\n\nis ");
+        if (!Checker.anagram(str1,str2))
+            System.out.print ("NOT ");
+        System.out.println("an anagram of\n\n" + str2);
+	}
+}
+
+
+
+
+
+
+
+
+public class Checker 
+{
+    public static double palindrome(String input) {
+        int matches = 0;
+        String result = "";
+        for (int e = 0; e < input.length(); e++) {
+            char c = input.charAt(e);
+            if (c >= 'a' && c <= 'z' || c >= 'A' && c <= 'Z') {
+                result += c;
+            }
+        }
+        String clean = result.toLowerCase();
+        for (int i = 0; i < clean.length() / 2; i++) {
+            if (clean.charAt(i) == clean.charAt(clean.length() - 1 - i)) {
+                matches++;
+            }
+        }
+        int total = matches;
+        return total / (double)(clean.length() / 2);
+    }
+    public static boolean anagram(String input1, String input2) {
+        String sanitized1 = "";
+        for (int e = 0; e < input1.length(); e++) {
+            char c = input1.charAt(e);
+            if (c >= 'a' && c <= 'z' || c >= 'A' && c <= 'Z') {
+                sanitized1 += c;
+            }
+        }
+        sanitized1 = sanitized1.toLowerCase();
+        String sanitized2 = "";
+        for (int e = 0; e < input2.length(); e++) {
+            char c = input2.charAt(e);
+            if (c >= 'a' && c <= 'z' || c >= 'A' && c <= 'Z') {
+                sanitized2 += c;
+            }
+        }
+        sanitized2 = sanitized2.toLowerCase();
+        if (sanitized1.length() != sanitized2.length()) {
+            return false;
+        }
+        int[] occurrences1 = new int[26];
+        for (int i = 0; i < sanitized1.length(); i++) {
+            char c = sanitized1.charAt(i);
+            occurrences1[c - 'a']++;
+        }
+        int[] occurrences2 = new int[26];
+        for (int i = 0; i < sanitized2.length(); i++) {
+            char c = sanitized2.charAt(i);
+            occurrences2[c - 'a']++;
+        }
+        for (int i = 0; i < 26; i++) {
+            if (occurrences1[i] != occurrences2[i]) {
+                return false;
+            }
+        }
+        return true;
+    }
+}
