@@ -1,0 +1,60 @@
+import random
+
+def generate_id(num):
+  student_ids = []
+  for _ in range(num):
+    if random.choice([True, False]):
+        student_ids.append([random.randint(0, 8191)])
+    else:
+      first_initial = chr(random.randint(ord('A'), ord('Z')))
+      last_initial = chr(random.randint(ord('A'), ord('Z')))
+      gender = random.choice([True, False])
+      grade_level = random.randint(0, 3)
+      student_ids.append([first_initial, last_initial, gender, grade_level])
+  return student_ids
+
+def identify(student_ids):
+  i = 0
+  while i<len(student_ids):
+    if len(student_ids[i]) == 4:  
+      generator(student_ids[i])  
+    else:
+      student_ids[i] = info_extractor(student_ids[i])
+    i+=1
+    
+def info_extractor(student_ids):
+  id = student_ids[0]
+  gender = id % 2
+  if gender == 0:
+    gender = True
+  elif gender == 1:
+    gender = False
+  id = id // 2
+  last_letter = chr(ord('A') - 1 + id % 32)
+  id = id // 32
+  first_letter = chr(ord('A') - 1 + id % 32)
+  id = id // 32
+  grade = id % 4
+  temp_list = [first_letter, last_letter, 'Male' if gender else 'Female', grade, "ID#", student_ids[0]]
+  return temp_list
+
+def generator(student_ids):
+  final_list = []
+  first = student_ids[0]
+  last = student_ids[1]
+  gender = student_ids[2]
+  grade = student_ids[3]
+  id = 0
+  first = (ord(first)) - (ord('A')) + 1
+  last = (ord(last)) - (ord('A')) + 1
+  gender = int(gender)
+  id = id + (first * 32 * 4) + (last * 4) + gender + grade
+  final_list.append(id)
+  return final_list
+
+student_ids = generate_id(5)
+i = 0
+identify(student_ids)
+while i < len(student_ids):
+  print ("ID:", info_extractor ([random.randint(0, 8191)]))
+  i = i + 1
