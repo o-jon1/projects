@@ -1,0 +1,18 @@
+public class Main
+{
+	public static void main(String[] args) {
+		int[][] sats = { 
+		    {1320, 1400, 1000, 840, 1040}, 
+		    {1200, 1320, 1440, 1520, 890, 1080, 1230}, 
+		    {1440, 1460, 680, 890, 1300, 1580}, 
+		    {950, 1200, 1510, 1070, 1100, 1030, 930, 880, 1540, 1360}};
+		for (int i = 0; i < sats.length; i++) {
+		    int avg = 0;
+		    for (int k = 0; k < sats[i].length; k++) {
+		        avg += sats[i][k];
+		    }
+		    avg /= sats[i].length;
+		    System.out.println(avg);
+		}
+	}
+}
