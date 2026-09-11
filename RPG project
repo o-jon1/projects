@@ -1,0 +1,32 @@
+import random
+
+theNames = ["Scythe", "Dragon Slayer", "Katana", "Axe", "Hammer"]
+theHits = [0.9, 0.9, 0.6, 0.5, 0.45]
+theMin_dmg = [5, 15, 5, 10, 20]
+theMax_dmg = [45, 35, 65, 60, 60]
+theCritical = [0.05, 0.1, 0.05, 0.05, 0.02]
+
+selected_weapon = "Dragon Slayer"
+
+def damage_simulator(num_swings, weapon_choice):
+    total_damage = 0
+    for _ in range(num_swings):
+        index = theNames.index(weapon_choice)
+        weapon_choice = theNames[index]
+        hit = theHits[index]
+        min_dmg = theMin_dmg[index]
+        max_dmg = theMax_dmg[index]
+        critical = theCritical[index]
+      
+        if random.random() <= hit: 
+            damage = random.randint(min_dmg, max_dmg)  
+            if random.random() <= critical: 
+                damage *= 2 
+
+            total_damage += damage
+
+    if num_swings > 0:
+        average_damage = total_damage / num_swings
+        return f"Average damage per swing with {weapon_choice} over {num_swings} swings is {average_damage}"
+num_swings = 100
+print(damage_simulator(num_swings, selected_weapon))
