@@ -1,0 +1,91 @@
+public class Main
+{
+	public static void main(String[] args) {
+        Playlist mySongs = new Playlist();
+        Songs weezer = new Songs ("Undone - The Sweater Song", "Weezer", "5:05");
+        Songs radiohead = new Songs ("Karma Police", "Radiohead", "4:24");
+        mySongs.addTrack(weezer);
+        mySongs.addTrack(radiohead);
+        mySongs.addTrack("High and Dry", "Radiohead", "4:17");
+        mySongs.addTrack("Would?", "Alice In Chains", "3:26");
+        mySongs.addTrack("Knife Prty", "Deftones", "4:49");
+        mySongs.addTrack("Heart-Shaped Box", "Nirvana", "4:41");
+        mySongs.addTrack("One", "Metallica", "7:26");
+        mySongs.print();
+        System.out.println(Playlist.formatTime(mySongs.getRuntime()));
+	}
+}
+
+
+
+
+
+public class Songs implements Comparable<Songs> {
+    private String title;
+    private String artist;
+    private int runtime;
+    public Songs(String title, String artist, String time) {
+        this.title = title;
+        this.artist = artist;
+        this.runtime = calcRuntime(time);
+    }
+    private int calcRuntime(String time) {
+        int total = 0;
+        for (String digit : time.split(":")) {
+            total = total * 60 + Integer.parseInt(digit);
+        }
+        return total;
+    }
+    public String getTitle() {
+        return title;
+    }
+    public String getArtist() {
+        return artist;
+    }
+    public int getTime() {
+        return runtime;
+    }
+    @Override
+    public int compareTo(Songs o) {
+        return this.title.compareTo(o.getTitle());
+    }
+}
+
+
+
+
+
+
+
+import java.util.ArrayList;
+import java.util.Collections;
+public class Playlist {
+    private ArrayList<Songs> tracks = new ArrayList<Songs>();
+    private static int totalRuntime;
+    public void addTrack(Songs tune) {
+       tracks.add(tune);
+       totalRuntime += tune.getTime();
+    }
+    public void addTrack(String title, String artist, String time) {
+       Songs tunes = new Songs(title, artist, time);
+       tracks.add(tunes);
+       totalRuntime += tunes.getTime();
+    }
+    public void print() {
+       for (Songs song : tracks)
+       System.out.println(song.getTitle() + " , " + song.getArtist() + " - " + formatTime(song.getTime()));
+    }
+    public static String formatTime(int time) {
+    int hours = time / 3600;
+    int minutes = (time % 3600) / 60;
+    int seconds = time % 60;
+    String result = hours + " hours " + minutes + " minutes " + seconds + " seconds ";
+    return result;
+    }
+    public void sort() {
+        Collections.sort(tracks);
+    }
+    public int getRuntime() {
+        return totalRuntime;
+    }
+}
