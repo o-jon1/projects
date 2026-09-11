@@ -1,0 +1,63 @@
+import random
+
+names = "Anthony,Bradford,Raymond,Brandon,Cassia,Sophia,Derek,Shadia,Benjamin,Joshua,Ryu,Ryan,Jonathan,Rafay,Nicole,Gabriel,Cloe,Andre,Lorenzo,Issac,Nainika,Jaison,Daniel,Fabio,Andre,Cristian,Edison,Lucien,Samantha,Marc,Matthew,Kamryn,Ned,Elyssa,Savya".split(",")
+
+def amongUs(names):
+  numPlayers = int(input("Enter the number of players (between 4 and 35): "))
+  numImposters = (numPlayers // 4)
+  if numImposters < 1:
+    numImposters = 1
+  players = random.sample(names, numPlayers)
+  imposters = random.sample(players, numImposters)
+
+  print("Players:")
+  for i in players:
+    print("-", i)
+
+  print(" ")
+  print("Imposters:")
+  for i in imposters:
+    print("-", i)
+
+  roundNum = 1
+  while True:
+    print(" ")
+    print("ROUND", roundNum)
+
+    votes = {}
+
+    for i in players:
+      choices = players.copy()
+      choices.remove(i)
+      vote = random.choice(choices)
+      print(f"{i} votes {vote}")
+      if vote in votes:
+          votes[vote] += 1
+      else:
+          votes[vote] = 1
+
+    maxVotes = max(votes.values())
+    voteCount = [player for player, count in votes.items() if count == maxVotes]
+
+    if len(voteCount) > 1:
+        print("Votes tied")
+    else:
+        eliminatedPlayer = voteCount[0]
+        players.remove(eliminatedPlayer)
+        print(f"{eliminatedPlayer} is eliminated.")
+
+        if eliminatedPlayer in imposters:
+            imposters.remove(eliminatedPlayer)
+
+    if len(imposters) == len(players):
+        print("Imposters win because the number of imposters is equal to the number of players")
+        break
+    elif len(imposters) == 0:
+        print("Players win because there are no imposters left")
+        break
+
+    roundNum += 1
+
+amongUs(names)
+
+
