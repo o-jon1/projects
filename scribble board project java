@@ -1,0 +1,374 @@
+import java.util.Scanner;
+
+public class Main 
+{
+	public static void main(String[] args) {
+		Board board = new Board();
+		boolean checker = true;
+		while (checker)
+		{
+    		System.out.println("\n\nEnter a number for \033[3mda board\033[0m");
+    		System.out.println("");
+    		System.out.println("1. Print\n");
+    		System.out.println("2. Resize\n");
+    		System.out.println("3. Enter a word\n");
+    		System.out.println("4. Overwrite word\n");
+    		System.out.println("5. Clear\n");
+    		System.out.println("6. Exit\n");
+    
+    		int input = intIn(1, 6);
+    		
+    		String word;
+    		int row;
+    		int col;
+    		boolean horizontal;
+    		boolean reverse;
+    		
+			if (input == 1)
+			{
+				board.print();
+				continue;
+			}
+			else if (input == 2)
+			{
+				System.out.println("How many rows do you want???????????");
+				int r = intIn(1, 50);
+				System.out.println("How many columns do you want???????????");
+				int c = intIn(1, 50);
+				board.update(r, c);
+				continue;
+			}
+			else if (input == 3)
+			{
+				System.out.println("Enter word");
+				word = sIn();
+				System.out.println("Enter row");
+				row = intIn(1, board.getRow());
+				System.out.println("Enter column");
+				col = intIn(1, board.getCol());
+				System.out.println("Enter true for horizontal or false for vertical");
+				horizontal = Boolean.parseBoolean(sIn());
+				System.out.println("Enter true or false to reversify");
+                reverse = Boolean.parseBoolean(sIn());
+				board.loadWord(word, row - 1, col - 1, horizontal, reverse);
+				continue;
+			}
+			else if (input == 4)
+			{
+                System.out.println("Enter word");
+                word = sIn();
+                System.out.println("Enter row");
+                row = intIn(1, board.getRow());
+                System.out.println("Enter column");
+                col = intIn(1, board.getCol());
+                System.out.println("Enter true for horizontal or false for vertical");
+                horizontal = Boolean.parseBoolean(sIn());
+                System.out.println("Enter true or false to reversify");
+                reverse = Boolean.parseBoolean(sIn());
+                board.write(word, row - 1, col - 1, horizontal, reverse);
+                continue;
+			}
+			else if (input == 5)
+			{
+				board.reset();
+				continue;
+			}
+			else if (input == 6)
+			{
+				checker = false;
+			}
+	    }
+	}
+	private static int intIn(int low, int high)
+	{
+		boolean cont = true;
+		Scanner keyboard = new Scanner (System.in);
+		String input;
+		boolean invalid = true;
+		int choice=0;
+		while (cont)
+		{
+			try
+			{
+				input = keyboard.nextLine ();
+				choice = Integer.parseInt (input);
+				if (choice<low || choice>high)
+					System.out.println("Please select a number between " + low + " and " + high);
+				else
+					cont = false;
+			}
+			catch (Exception e)
+			{
+				System.out.println ("Please enter a number");
+			}
+		}
+		return choice;
+	}
+
+	private static String sIn()
+	{
+		boolean cont = true;
+		Scanner keyboard = new Scanner (System.in);
+		String input="";
+		boolean invalid = true;
+		while (cont)
+		{
+			try
+			{
+				input = keyboard.nextLine ();
+				cont = false;
+			}
+			catch (Exception e)
+			{
+				System.out.println ("Invalid input");
+			}
+		}
+		return input;
+	}
+}
+
+
+
+
+
+
+
+public class Board extends Field
+{
+	public void update(int r, int c)
+	{
+		super.update(r, c);
+	}
+	public void reset()
+	{
+		super.propagate();
+	}
+	public int getRow()
+	{
+		return frame.length;
+	}
+	public int getCol()
+	{
+		return frame[0].length;
+	}
+	public void loadWord(String word, int r, int c, boolean horizontal) 
+	{
+		if (horizontal) 
+		{
+			for (int i = 0; i < word.length(); i++) 
+			{
+				if (c + i < getCol() && r < getRow()) 
+				{
+					if (!inUse[r][c + i]) 
+					{
+						frame[r][c + i] = word.charAt(i);
+						inUse[r][c + i] = true;
+					}
+				}
+				else 
+				{
+					break;
+				}
+			}
+		}
+		else 
+		{
+			for (int i = 0; i < word.length(); i++) 
+			{
+				if (r + i < getRow() && c < getCol()) 
+				{
+					if (!inUse[r + i][c]) 
+					{
+						frame[r + i][c] = word.charAt(i);
+						inUse[r + i][c] = true;
+					}
+				}
+				else 
+				{
+					break;
+				}
+			}
+		}
+	}
+	public void write(String word, int r, int c, boolean horizontal) 
+	{
+		if (horizontal) 
+		{
+			for (int i = 0; i < word.length(); i++) 
+			{
+				if (c + i < getCol() && r < getRow()) 
+				{
+					frame[r][c + i] = word.charAt(i);
+					inUse[r][c + i] = true;
+				}
+				else 
+				{
+					break;
+				}
+			}
+		}
+		else 
+		{
+			for (int i = 0; i < word.length(); i++) 
+			{
+				if (r + i < getRow() && c < getCol()) 
+				{
+					frame[r + i][c] = word.charAt(i);
+					inUse[r + i][c] = true;
+				}
+				else 
+				{
+					break;
+				}
+			}
+		}
+	}
+	public void loadWord(String word, int r, int c, boolean horizontal, boolean reverse) 
+	{
+		if (!reverse) 
+		{
+			loadWord(word, r, c, horizontal);
+		}
+		else 
+		{
+			if (horizontal) 
+			{
+				for (int i = 0; i < word.length(); i++) 
+				{
+					if (c - i >= 0 && r < getRow()) 
+					{
+						if (!inUse[r][c - i]) 
+						{
+							frame[r][c - i] = word.charAt(i);
+							inUse[r][c - i] = true;
+						}
+					}
+					else 
+					{
+						break;
+					}
+				}
+			}
+			else 
+			{
+				for (int i = 0; i < word.length(); i++) 
+				{
+					if (r - i >= 0 && c < getCol()) 
+					{
+						if (!inUse[r - i][c]) 
+						{
+							frame[r - i][c] = word.charAt(i);
+							inUse[r - i][c] = true;
+						}
+					}
+					else 
+					{
+						break;
+					}
+				}
+			}
+		}
+	}
+	public void write(String word, int r, int c, boolean horizontal, boolean reverse) 
+	{
+		if (!reverse) 
+		{
+			write(word, r, c, horizontal);
+		}
+		else 
+		{
+			if (horizontal) 
+			{
+				for (int i = 0; i < word.length(); i++) 
+				{
+					if (c - i >= 0 && r < getRow()) 
+					{
+						frame[r][c - i] = word.charAt(i);
+						inUse[r][c - i] = true;
+					}
+					else 
+					{
+						break;
+					}
+				}
+			}
+			else 
+			{
+				for (int i = 0; i < word.length(); i++) 
+				{
+					if (r - i >= 0 && c < getCol()) 
+					{
+						frame[r - i][c] = word.charAt(i);
+						inUse[r - i][c] = true;
+					}
+					else 
+					{
+						break;
+					}
+				}
+			}
+		}
+	}
+}
+
+
+
+
+
+
+
+public class Field
+{
+    protected char[][] frame;
+    protected boolean[][] inUse;
+    public Field()
+    {
+        frame = new char[1][8];
+        inUse = new boolean[1][8];
+        propagate();
+    }
+    
+    protected void update(int r, int c)
+    {
+        frame = new char[r][c];
+        inUse = new boolean[r][c];
+        propagate();
+    }
+    
+    protected void propagate()
+    {
+        for (int i = 0; i<frame.length;i++)
+            for (int j = 0; j<frame[0].length;j++)
+            {
+                    frame[i][j]='*';
+                    inUse[i][j]=false;
+            }
+    }
+    
+    public void print()
+    {
+        for (int i = 0; i<frame.length+2; i++)
+        {
+            for (int j = 0; j<frame[0].length+2; j++)
+            {
+                if (i==0||i==frame.length+1)
+                    if (j==0||j==frame[0].length+1)
+                        System.out.print('+');
+                    else
+                        System.out.print('-');
+                else if (j==0||j==frame[0].length+1)
+                    System.out.print('|');
+                else
+                    System.out.print(frame[i-1][j-1]);
+            }
+            System.out.println();
+        }
+
+    }
+    
+    public void loadWord (String pass)
+    {
+        for (int i = 0; i< Math.min(pass.length(),frame[0].length);i++)
+            frame[0][i]=pass.charAt(i);
+    }
+}
